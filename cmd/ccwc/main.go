@@ -3,6 +3,8 @@ package main
 import (
 	"flag"
 	"fmt"
+
+	"github.com/sugamadhiakri/ccwc/internal/wc"
 )
 
 func main() {
@@ -14,12 +16,12 @@ func main() {
 	args := flag.Args()
 
 	if len(args) == 0 {
-		fmt.Println("Error: No files were provided.")
+		panic("Error: No files were provided.")
 	}
 
 	fileName := args[0]
 
 	if countBytes {
-		fmt.Printf("Counting Bytes for %s", fileName)
+		fmt.Printf("%d %s\n", wc.CountBytes(fileName), fileName)
 	}
 }
