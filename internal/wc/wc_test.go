@@ -21,13 +21,18 @@ func createTempFile(content []byte) (string, error) {
 	return tempFile.Name(), nil
 }
 
-func TestCountBytes(t *testing.T) {
+func TestCountTotal(t *testing.T) {
 	testCases := []struct {
-		content  []byte
-		expected int
+		content       []byte
+		expectedBytes int
+		expectedLines int
+		expectedChars int
+		expectedWords int
 	}{
-		{[]byte("Hello, world!"), 13},
-		{[]byte(""), 0},
+		{[]byte("Hello, world!"), 13, 0, 13, 2},
+		{[]byte(""), 0, 0, 0, 0},
+		{[]byte("Hello\nworld!"), 12, 1, 12, 2},
+		{[]byte("Hello\nworld!\n"), 13, 2, 13, 2},
 	}
 
 	for _, tc := range testCases {
@@ -37,10 +42,22 @@ func TestCountBytes(t *testing.T) {
 		}
 		defer os.Remove(fileName)
 
-		byteCount := CountBytes(fileName)
+		bytes, lines, chars, words := CountTotal(fileName)
 
-		if byteCount != tc.expected {
-			t.Errorf("CountBytes(%s) = %d; want %d", tc.content, byteCount, tc.expected)
+		if bytes != tc.expectedBytes {
+			t.Errorf("CountTotal(%s) bytes = %d; want %d", tc.content, bytes, tc.expectedBytes)
+		}
+
+		if lines != tc.expectedLines {
+			t.Errorf("CountTotal(%s) lines = %d; want %d", tc.content, lines, tc.expectedLines)
+		}
+
+		if chars != tc.expectedChars {
+			t.Errorf("CountTotal(%s) chars = %d; want %d", tc.content, chars, tc.expectedChars)
+		}
+
+		if words != tc.expectedWords {
+			t.Errorf("CountTotal(%s) words = %d; want %d", tc.content, words, tc.expectedWords)
 		}
 	}
 }
